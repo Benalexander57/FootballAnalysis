@@ -61,7 +61,7 @@ def main():
                                         teamId integer
                                     ); """
 
-    sql_create_country_table = """ CREATE TABLE IF NOT EXISTS lineup (
+    sql_create_country_table = """ CREATE TABLE IF NOT EXISTS country (
                                         id integer PRIMARY KEY,
                                         countryId integer,
                                         name integer

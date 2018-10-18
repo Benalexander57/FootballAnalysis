@@ -31,12 +31,19 @@ def insert_team(connection, team):
     cur.execute(sql, team)
     return cur.lastrowid
 
-
 def insert_season(connection, season):
     sql = ''' INSERT INTO season(seasonId, seasonName)
               VALUES(?,?) '''
     cur = connection.cursor()
     cur.execute(sql, season)
+    return cur.lastrowid
+
+def insert_lineup(connection, lineup):
+    print(lineup)
+    sql = ''' INSERT INTO lineup(matchId, teamId, playerId)
+              VALUES(?,?,?) '''
+    cur = connection.cursor()
+    cur.execute(sql, lineup)
     return cur.lastrowid
 
 def check_duplicate_competition(connection, competitionId):
@@ -73,4 +80,14 @@ def check_duplicate_season(connection, seasonId):
     if data is None:
         return False
     else:
-        return True                
+        return True   
+
+#matchId, teamId, playerId
+def check_duplicate_lineup(connection, matchId, teamId, playerId):
+    cursor = connection.cursor()
+    cursor.execute("SELECT id FROM lineup WHERE matchId = ? AND teamId = ? AND playerId = ?", ( matchId, teamId, playerId))
+    data=cursor.fetchone()
+    if data is None:
+        return False
+    else:
+        return True                            

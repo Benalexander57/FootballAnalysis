@@ -3,7 +3,8 @@ import variables
 import os
 import sys
 import json
-from databaseOperations import insert_competition, insert_match, insert_season, insert_team, check_duplicate_competition, check_duplicate_match, check_duplicate_team, check_duplicate_season
+from databaseOperations import ( insert_competition, insert_match, insert_season, insert_team, 
+insert_lineup, check_duplicate_competition, check_duplicate_match, check_duplicate_team, check_duplicate_season, check_duplicate_lineup )
 from sqlite3 import Error
 from createDatabase import create_connection, close_connection
 from competition import create_competition
@@ -43,16 +44,30 @@ def populateDatabase():
                     print("id " + str(id) + " Inserted")  
 
 
+    # each lineup is in its own file with the filename as the matchID
     directory = os.fsencode(variables.lineups_location)
 
+    # need to put in lineup/ player / country
     for file in os.listdir(directory):
         filename = os.fsdecode(file)
         if filename.endswith(".json"): 
             with open(os.path.join(directory, file), encoding='utf-8') as matchFile:
                 data = json.load(matchFile)
-                print(data)
-                                        
+                # print(os.path.splitext(filename)[0])
+                # print(data[0])
+                # print()
+                # print(data[1])
+                # print()
+                # print()
 
+                for player in data[0]["lineup"]:
+                    #matchId, teamId, playerId
+                    if not check_duplicate_lineup( connection, os.path.splitext(filename)[0], data[0]["team_id"], player["player_id"] ):
+                        id = insert_lineup( connection, ( os.path.splitext(filename)[0], data[0]["team_id"], player["player_id"] ) )
+                        print("id " + str(id) + " Inserted")  
+                        
+    #can't figure out why but nothing in the above loop commits to DB unless i call connection.commit - this is not needed in the other calls.                                      
+    connection.commit()
     close_connection(connection)
 
 if __name__ == '__main__':
