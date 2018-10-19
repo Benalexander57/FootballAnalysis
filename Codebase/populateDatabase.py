@@ -3,8 +3,8 @@ import variables
 import os
 import sys
 import json
-from databaseOperations import ( insert_competition, insert_match, insert_season, insert_team, 
-insert_lineup, check_duplicate_competition, check_duplicate_match, check_duplicate_team, check_duplicate_season, check_duplicate_lineup )
+from databaseOperations import ( insert_competition, insert_match, insert_season, insert_team, insert_lineup, insert_player,
+    check_duplicate_competition, check_duplicate_match, check_duplicate_team, check_duplicate_season, check_duplicate_lineup, check_duplicate_player )
 from sqlite3 import Error
 from createDatabase import create_connection, close_connection
 from competition import create_competition
@@ -60,11 +60,40 @@ def populateDatabase():
                 # print()
                 # print()
 
+                #input the lineups
+                #team 1
                 for player in data[0]["lineup"]:
                     #matchId, teamId, playerId
                     if not check_duplicate_lineup( connection, os.path.splitext(filename)[0], data[0]["team_id"], player["player_id"] ):
                         id = insert_lineup( connection, ( os.path.splitext(filename)[0], data[0]["team_id"], player["player_id"] ) )
-                        print("id " + str(id) + " Inserted")  
+                        print("id " + str(id) + "Lineup Inserted")
+
+                    # input the players from team 1
+                    if not check_duplicate_player( connection, player["player_id"] ):    
+                        countryId = None
+                        if ("country" in player):
+                            countryId = player["country"]["id"]
+
+                        id = insert_player( connection, ( player["player_id"], player["player_name"], player["jersey_number"], countryId, data[0]["team_id"] ) )
+                        print("filename " + os.path.splitext(filename)[0] + "   player name " + player["player_name"])
+                        print("id " + str(id) + " player Inserted")
+
+                #team 2
+                for player in data[1]["lineup"]:
+                    #matchId, teamId, playerId
+                    if not check_duplicate_lineup( connection, os.path.splitext(filename)[0], data[1]["team_id"], player["player_id"] ):
+                        id = insert_lineup( connection, ( os.path.splitext(filename)[0], data[1]["team_id"], player["player_id"] ) )
+                        print("id " + str(id) + " Inserted")
+
+                    # input the players from team 2 
+                    if not check_duplicate_player( connection, player["player_id"] ):   
+                        countryId = None
+                        if ("country" in player):
+                            countryId = player["country"]["id"]
+
+                        id = insert_player( connection, ( player["player_id"], player["player_name"], player["jersey_number"], countryId, data[1]["team_id"] ) )
+                        print("filename " + os.path.splitext(filename)[0] + "   player name " + player["player_name"])
+                        print("id " + str(id) + " player Inserted")              
                         
     #can't figure out why but nothing in the above loop commits to DB unless i call connection.commit - this is not needed in the other calls.                                      
     connection.commit()
