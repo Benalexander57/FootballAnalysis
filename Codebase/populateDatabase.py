@@ -53,13 +53,7 @@ def populateDatabase():
         if filename.endswith(".json"): 
             with open(os.path.join(directory, file), encoding='utf-8') as matchFile:
                 data = json.load(matchFile)
-                # print(os.path.splitext(filename)[0])
-                # print(data[0])
-                # print()
-                # print(data[1])
-                # print()
-                # print()
-
+                
                 #input the lineups
                 #team 1
                 for player in data[0]["lineup"]:

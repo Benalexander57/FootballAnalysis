@@ -65,6 +65,18 @@ def main():
                                         id integer PRIMARY KEY,
                                         countryId integer,
                                         name integer
+                                    ); """
+
+
+    #event table then a table for each event typ elike pass/tackle etc with the extra info
+    sql_create_event_table = """ CREATE TABLE IF NOT EXISTS eventType (
+                                        id integer PRIMARY KEY,
+                                        identifier text NOT NULL,
+                                        matchId integer,
+                                        description integer,
+                                        attributeGroup integer,
+                                        attribute integer,
+                                        attributeDescription integer
                                     ); """                                    
     # lineup table - matchId, teamId,  PlayerId, 
     
