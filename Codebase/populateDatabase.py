@@ -3,7 +3,7 @@ import variables
 import os
 import sys
 import json
-from databaseOperations import ( insert_competition, insert_match, insert_season, insert_team, insert_lineup, insert_player,
+from databaseOperations import ( insert_competition, insert_match, insert_season, insert_team, insert_lineup, insert_player, insert_event
     check_duplicate_competition, check_duplicate_match, check_duplicate_team, check_duplicate_season, check_duplicate_lineup, check_duplicate_player )
 from sqlite3 import Error
 from createDatabase import create_connection, close_connection
@@ -87,9 +87,30 @@ def populateDatabase():
 
                         id = insert_player( connection, ( player["player_id"], player["player_name"], player["jersey_number"], countryId, data[1]["team_id"] ) )
                         print("filename " + os.path.splitext(filename)[0] + "   player name " + player["player_name"])
-                        print("id " + str(id) + " player Inserted")              
+                        print("id " + str(id) + " player Inserted")   
+
+
+
+    # each list of events for a match is in its own file with the matchID as the filename
+    directory = os.fsencode(variables.events_location)
+
+    for file in os.listdir(directory):   
+        filename = os.fsdecode(file)
+        if filename.endswith(".json"): 
+            with open(os.path.join(directory, file), encoding='utf-8') as eventFile:
+                data = json.load(eventFile)
+                if ( filename == "7298.json" ):
+                    for event in data
+                        with connection:
+
+                            if not check_duplicate_event( connection, event["id"])  
+                            id = insert_event( connection, ( os.path.splitext(filename)[0], data[1]["team_id"], player["player_id"] ) )
+                            print("id " + str(id) + "Event Inserted")
+
+
+                    print(data)   
                         
-    #can't figure out why but nothing in the above loop commits to DB unless i call connection.commit - this is not needed in the other calls.                                      
+    #can't figure out why but nothing in the above loop commits to DB unless I call connection.commit - this is not needed in the other calls.                                      
     connection.commit()
     close_connection(connection)
 

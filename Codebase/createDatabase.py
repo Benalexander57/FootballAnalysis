@@ -129,7 +129,7 @@ def main():
                                     ); """      
 
 
-     sql_create_foulCommitted_table = """ CREATE TABLE IF NOT EXISTS foulCommitted (
+    sql_create_foulCommitted_table = """ CREATE TABLE IF NOT EXISTS foulCommitted (
                                         id integer PRIMARY KEY,
                                         eventFk integer NOT NULL,
                                         offensiveFl integer,
@@ -280,15 +280,15 @@ def main():
 
 
     if ( conn is not None ):
-    	create_table(conn, sql_create_competition_table)
-    	create_table(conn, sql_create_match_table)
-    	create_table(conn, sql_create_team_table)
-    	create_table(conn, sql_create_season_table)
-    	create_table(conn, sql_create_lineup_table)
-    	create_table(conn, sql_create_player_table)
-    	create_table(conn, sql_create_country_table)
+        create_table(conn, sql_create_competition_table)
+        create_table(conn, sql_create_match_table)
+        create_table(conn, sql_create_team_table)
+        create_table(conn, sql_create_season_table)
+        create_table(conn, sql_create_lineup_table)
+        create_table(conn, sql_create_player_table)
+        create_table(conn, sql_create_country_table)
         create_table(conn, sql_create_event_table)
-    	close_connection(conn)
+        close_connection(conn)
 
     else:
     	print("ERROR - Could not create database connection")

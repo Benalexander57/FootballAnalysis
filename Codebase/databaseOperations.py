@@ -52,6 +52,14 @@ def insert_player(connection, player):
     cur.execute(sql, player)
     return cur.lastrowid    
 
+def insert_event(connection, event):
+    sql = ''' INSERT INTO event( playerId, name, number, countryId, teamId)
+              VALUES(?,?,?,?,?) '''
+    cur = connection.cursor()
+    cur.execute(sql, event)
+    return cur.lastrowid   
+
+
 def check_duplicate_competition(connection, competitionId):
     cursor = connection.cursor()
     cursor.execute("SELECT competitionId FROM competition WHERE competitionId = ?", ( competitionId,))
