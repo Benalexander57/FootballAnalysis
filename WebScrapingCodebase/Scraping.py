@@ -5,6 +5,7 @@ import pandas as pd
 import re
 import random
 import requests
+import json
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import datetime
@@ -115,6 +116,39 @@ for tr in playerBody.find_all('tr'):
 # Create a dataframe where the rows = all_rows_list and columns = headers_list
 xg_df = pd.DataFrame(all_player_rows_list, columns=player_headers_list)
 print(all_player_rows_list)
+
+
+
+
+all_scripts = soup.find_all('script')
+
+all_players = []
+
+for script in all_scripts:
+    if script.find(text=re.compile("var playersData")):
+        m = script.text
+        n = m[m.find("(")+1:m.find(")")]
+        o = n.replace("'","" )	
+        q = o.encode('utf8')
+        players = q.decode('unicode-escape')
+        
+        players = json.loads(players)
+        for player in players:
+        	current_player = [player["id"], player["player_name"], player["games"], player["time"], player["goals"], player["xG"], player["assists"], player["xA"], player["shots"], player["key_passes"], 
+        	player["yellow_cards"], player["red_cards"], player["position"], player["team_title"], player["npg"], player["npxG"], player["xGChain"], player["xGBuildup"]]
+        	all_players.append(current_player)
+        break
+
+all_players_xg_header = ["id", "player_name", "games", "time", "goals", "xG", "assists", "xA", "shots", "key_passes", 
+        	"yellow_cards", "red_cards", "position", "team_title", "npg", "npxG", "xGChain", "xGBuildup"] 
+
+all_players_xg = pd.DataFrame(all_players, columns = all_players_xg_header)        
+
+
+
+
+
+
 
 
 #loop through all https://understat.com/player/7276 players
