@@ -23,16 +23,7 @@ if __name__ == '__main__':
     print (len(all_players))
     print (len(fpl_players))
 
-    # print (all_players)
-    # print (fpl_players)
-
-
-    # print (all_players[0])
-    # print (fpl_players[0])
     count = 0
-    count2 = 0 
-
-
 
     # first pass through the players which closely match 
     for xgPlayer in all_players_copy:
@@ -49,29 +40,61 @@ if __name__ == '__main__':
                 all_players.remove(xgPlayer)
                 print("removed " + xgPlayer["player_name"] )
                 fpl_players.remove(fplPlayer)
-                print("removed" + fplPlayer["first_name"] + " " + fplPlayer["second_name"] )
+                print("removed " + fplPlayer["first_name"] + " " + fplPlayer["second_name"] )
                 count+=1
                 break
-                # matched = True
-
-        #     if ( matched ):
-        #         break    
-
-        # if ( matched ):
-        #     all_players.remove(xgPlayer)
 
     print("close matches: ", count)
+    print(len(all_players))
+    print(len(fpl_players))
 
+    count2 = 0 
+    matchCount = 0
 
-    # for xgPlayer in all_players:
-    #     for fplPlayer in fpl_players:
-    #         if ( 70 < ratio < 80 ):
-    #             print(xgPlayer["player_name"] + " weak matches with : " + fplPlayer["first_name"] + " " + fplPlayer["second_name"] )
-    #             count2+=1	
+    reduced_all_players_copy = all_players[:]
+    reduced_fpl_players_copy = fpl_players[:]
+
+    for xgPlayer in reduced_all_players_copy:
+        matchCount = 0
+        matchedPlayers = []
+        for fplPlayer in reduced_fpl_players_copy:
+
+            ratio = fuzz.ratio( xgPlayer["player_name"], fplPlayer["first_name"]+ " " + fplPlayer["second_name"] )
+
+            if ( 55 < ratio < 90 ):
+                print(xgPlayer["player_name"] + " weak matches with : " + fplPlayer["first_name"] + " " + fplPlayer["second_name"] )
+                matchedPlayers.append(fplPlayer)
+                matchCount+=1
+
+        if ( matchCount > 1):
+            copy_matchedPlayers = matchedPlayers[:]
+
+            maxRatio = None
+            maxRatioPlayer = None
+            for matchedPlayer in copy_matchedPlayers:
+                ratio = fuzz.ratio( xgPlayer["player_name"], fplPlayer["first_name"]+ " " + fplPlayer["second_name"] )
+                if ( ratio > maxRatio ):
+                    maxRatio = ratio
+                    maxRatioPlayer = matchedPlayer
+
+            print(xgPlayer["player_name"] + " has has the closest match with  : " + maxRatioPlayer["first_name"] + " " + maxRatioPlayer["second_name"])
+            all_players.remove(xgPlayer)
+            print("removed " + xgPlayer["player_name"] )
+            fpl_players.remove(maxRatioPlayer)
+            print("removed " + maxRatioPlayer["first_name"] + " " + maxRatioPlayer["second_name"] )
+        elif ( matchCount == 1 ):
+            print(xgPlayer["player_name"] + " has has 1 closest match with  : " + fplPlayer["first_name"] + " " + fplPlayer["second_name"])
+            all_players.remove(xgPlayer)
+            print("removed " + xgPlayer["player_name"] )
+            fpl_players.remove(fplPlayer)
+            print("removed " + fplPlayer["first_name"] + " " + fplPlayer["second_name"] )
+
 
 
     # print("not close matches: ", count2)				
 
-
+    print(len(all_players))
+    print(len(fpl_players))
+    print(all_players)
 
 
