@@ -69,10 +69,10 @@ if __name__ == '__main__':
         if ( matchCount > 1):
             copy_matchedPlayers = matchedPlayers[:]
 
-            maxRatio = None
+            maxRatio = 0
             maxRatioPlayer = None
             for matchedPlayer in copy_matchedPlayers:
-                ratio = fuzz.ratio( xgPlayer["player_name"], fplPlayer["first_name"]+ " " + fplPlayer["second_name"] )
+                ratio = fuzz.ratio( xgPlayer["player_name"], matchedPlayer["first_name"]+ " " + matchedPlayer["second_name"] )
                 if ( ratio > maxRatio ):
                     maxRatio = ratio
                     maxRatioPlayer = matchedPlayer
@@ -83,11 +83,11 @@ if __name__ == '__main__':
             fpl_players.remove(maxRatioPlayer)
             print("removed " + maxRatioPlayer["first_name"] + " " + maxRatioPlayer["second_name"] )
         elif ( matchCount == 1 ):
-            print(xgPlayer["player_name"] + " has has 1 closest match with  : " + fplPlayer["first_name"] + " " + fplPlayer["second_name"])
+            print(xgPlayer["player_name"] + " has has 1 closest match with  : " + matchedPlayers[0]["first_name"] + " " + matchedPlayers[0]["second_name"])
             all_players.remove(xgPlayer)
             print("removed " + xgPlayer["player_name"] )
-            fpl_players.remove(fplPlayer)
-            print("removed " + fplPlayer["first_name"] + " " + fplPlayer["second_name"] )
+            fpl_players.remove(matchedPlayers[0])
+            print("removed " + matchedPlayers[0]["first_name"] + " " + matchedPlayers[0]["second_name"] )
 
 
 
