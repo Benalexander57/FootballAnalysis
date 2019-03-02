@@ -45,8 +45,6 @@ def getPlayers():
                 break
 
     print("close matches: ", count)
-    # print(len(all_players))
-    # print(len(fpl_players))
 
     count2 = 0 
     matchCount = 0
@@ -54,10 +52,24 @@ def getPlayers():
     reduced_all_players_copy = all_players[:]
     reduced_fpl_players_copy = fpl_players[:]
 
+    # strip out any rogue names with a set list
+    brokenPlayers = { "Lucas Moura" : "Lucas Rodrigues Moura da Silva", "Willian" : "Willian Borges Da Silva", "Alisson" : "Alisson Ramses Becker", "Xande Silva" : "Alexandre Nascimento Costa Silva", "Bernardo Silva" : "Bernardo Mota Veiga de Carvalho e Silva" }
     for xgPlayer in reduced_all_players_copy:
+        for fplPlayer in reduced_fpl_players_copy:
+            for key, value in brokenPlayers.items():
+                if ( xgPlayer["player_name"] == key and fplPlayer["first_name"] + " " + fplPlayer["second_name"] == value ):
+                    print(xgPlayer["player_name"] + " static matched with  : " + fplPlayer["first_name"] + " " + fplPlayer["second_name"])
+                    final_players.append( [ xgPlayer["player_name"], xgPlayer["xG"], xgPlayer["xA"], fplPlayer["now_cost"], fplPlayer["total_points"], xgPlayer["time"], fplPlayer["element_type"] ] )
+                    all_players.remove( xgPlayer )
+                    fpl_players.remove( fplPlayer )
+
+    reduced_all_players_copy2 = all_players[:]
+    reduced_fpl_players_copy2 = fpl_players[:]
+
+    for xgPlayer in reduced_all_players_copy2:
         matchCount = 0
         matchedPlayers = []
-        for fplPlayer in reduced_fpl_players_copy:
+        for fplPlayer in reduced_fpl_players_copy2:
 
             ratio = fuzz.ratio( xgPlayer["player_name"], fplPlayer["first_name"]+ " " + fplPlayer["second_name"] )
 
@@ -174,22 +186,14 @@ if __name__ == '__main__':
     "1": 1
     }
 
-    # print(prices)
-    # print(points2.items())
-    # print(points.keys())
-    # print(points.items())
-    # print(prices.keys())
-    # print(prices.items())
-
-
     TOTAL_BUDGET = 1000
 
-    for k, v in points2.items():
-        print(k)
-        print(v)
+    # for k, v in points2.items():
+    #     print(k)
+    #     print(v)
     
     _vars = {k: LpVariable.dict(k, v, cat="Binary") for k, v in points2.items()}
-    print(_vars)
+    # print(_vars)
 
     prob = LpProblem("Fantasy", LpMaximize)
     rewards = []
